@@ -99,15 +99,42 @@ async function main() {
       }
 
       if (lightThemePlayers) {
+        Object.entries(lightThemePlayers).forEach(([key, value]) => {
+          // console.log(key);
+          Object.entries(value).forEach(([property, value]) => {
+            console.log(key, property, value);
+            const playerNumber = (parseInt(key) + 1).toString();
+            const variable = figma.variables.createVariable(
+              `players/${playerNumber}/${property}`,
+              collection,
+              "COLOR",
+            );
+            variable.setValueForMode(lightModeId, parseHex(value));
+          });
+        });
+      }
+
+      if (darkThemePlayers) {
         const localColorVariables =
           await figma.variables.getLocalVariablesAsync("COLOR");
 
         const currentCollectionVariables = localColorVariables.filter(
           (variable) => variable.variableCollectionId === collection.id,
         );
-
-        Object.entries(lightThemePlayers).forEach(([key, value]) => {
-          console.log(key, value);
+        currentCollectionVariables.filter((variable) => {
+          console.log(variable.name);
+        });
+        Object.entries(darkThemePlayers).forEach(([key, value]) => {
+          const playerNumber = (parseInt(key) + 1).toString();
+          Object.entries(value).forEach(([property, value]) => {
+            key = `players/${playerNumber}/${property}`;
+            console.log("dark key property value: " + key, property, value);
+            currentCollectionVariables.filter((variable) => {
+              if (variable.name === key) {
+                variable.setValueForMode(darkModeId, parseHex(value));
+              }
+            })!;
+          });
         });
       }
 
