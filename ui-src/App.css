@@ -1,13 +1,18 @@
 :root {
   font-family: InterVariable, sans-serif;
   font-variation-settings: "wght" 450;
+  font-display: swap;
+}
+
+body {
+  margin: 0;
 }
 
 main {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 4px;
+  /* gap: 12px; */
+  /* padding: 4px; */
 }
 
 footer {
@@ -15,13 +20,14 @@ footer {
   gap: 8px;
   justify-content: flex-end;
   border-top: 1px solid var(--figma-color-border);
-  padding: 12px 0;
+  padding: 12px 12px;
 }
 
 section {
   display: flex;
   gap: 24px;
   align-items: center;
+  padding: 12px;
 }
 
 label {
@@ -110,4 +116,6 @@ button[data-type="cancel"]:focus-visible {
 .error {
   font-size: 11px;
   color: var(--figma-color-text-danger);
+  padding-left: 12px;
+  margin-bottom: 12px;
 }
