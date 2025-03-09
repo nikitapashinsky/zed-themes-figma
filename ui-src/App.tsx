@@ -10,6 +10,9 @@ function App() {
   const onChange = (event) => {
     if (event.target.value !== "") {
       setIsEmpty(false);
+      setError(false);
+      parent.postMessage({ pluginMessage: { type: "resize" } }, "*");
+      console.log("not empty");
     }
     setValue(event.target.value);
   };
@@ -41,6 +44,7 @@ function App() {
           type="text"
           ref={inputRef}
           placeholder="E.g. Gruvbox"
+          className={error ? "input-error" : ""}
         />
       </section>
       {error && (

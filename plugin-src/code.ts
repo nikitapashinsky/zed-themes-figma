@@ -31,6 +31,9 @@ figma.ui.onmessage = async (msg: { type: string; name: string }) => {
   if (msg.type === "error") {
     figma.ui.resize(300, 124);
   }
+  if (msg.type === "resize") {
+    figma.ui.resize(300, 100);
+  }
   if (msg.type === "create-collection") {
     const collectionName = msg.name;
     const notification = figma.notify("Creating variable collection…");
