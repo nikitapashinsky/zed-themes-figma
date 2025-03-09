@@ -1,18 +1,29 @@
-import { useRef } from "react";
-import logoPng from "./logo.png";
-import logoSvg from "./logo.svg?raw";
-import Logo from "./Logo";
+import { useRef, useState } from "react";
 import "./App.css";
 
 function App() {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [value, setValue] = useState("");
+  const [isEmpty, setIsEmpty] = useState(true);
+  const [error, setError] = useState(false);
+
+  const onChange = (event) => {
+    if (event.target.value !== "") {
+      setIsEmpty(false);
+    }
+    setValue(event.target.value);
+  };
 
   const onCreate = () => {
-    const count = Number(inputRef.current?.value || 0);
-    parent.postMessage(
-      { pluginMessage: { type: "create-rectangles", count } },
-      "*",
-    );
+    if (value === "") {
+      setError(true);
+      parent.postMessage({ pluginMessage: { type: "error" } }, "*");
+    } else {
+      parent.postMessage(
+        { pluginMessage: { type: "create-collection", name: value } },
+        "*",
+      );
+    }
   };
 
   const onCancel = () => {
@@ -21,23 +32,27 @@ function App() {
 
   return (
     <main>
-      <header>
-        <img src={logoPng} />
-        &nbsp;
-        <img src={`data:image/svg+xml;utf8,${logoSvg}`} />
-        &nbsp;
-        <Logo />
-        <h2>Rectangle Creator</h2>
-      </header>
       <section>
-        <input id="input" type="number" min="0" ref={inputRef} />
-        <label htmlFor="input">Rectangle Count</label>
+        <label htmlFor="input">Collection name</label>
+        <input
+          value={value}
+          onChange={onChange}
+          id="input"
+          type="text"
+          ref={inputRef}
+          placeholder="Theme name"
+        />
       </section>
+      {error && (
+        <span className="error">Please enter a name for your collection</span>
+      )}
       <footer>
-        <button className="brand" onClick={onCreate}>
+        <button data-type="cancel" onClick={onCancel}>
+          Cancel
+        </button>
+        <button data-type="create" className="brand" onClick={onCreate}>
           Create
         </button>
-        <button onClick={onCancel}>Cancel</button>
       </footer>
     </main>
   );
