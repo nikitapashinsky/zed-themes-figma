@@ -40,7 +40,7 @@ function App() {
           id="input"
           type="text"
           ref={inputRef}
-          placeholder="Theme name"
+          placeholder="E.g. Gruvbox"
         />
       </section>
       {error && (
