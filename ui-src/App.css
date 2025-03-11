@@ -52,7 +52,7 @@ section {
 }
 
 section:first-of-type {
-  padding-bottom: 8px;
+  padding-bottom: 4px;
 }
 
 section:nth-of-type(2) {
@@ -149,6 +149,6 @@ button[data-type="cancel"]:focus-visible {
 .error {
   font-size: 11px;
   color: var(--figma-color-text-danger);
-  padding-left: 12px;
+  /* padding-left: 12px; */
   margin-bottom: 12px;
 }

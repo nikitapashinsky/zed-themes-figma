@@ -1,84 +1,137 @@
 import { useEffect, useRef, useState } from "react";
-import * as schema from "../plugin-src/data/schema.json";
 import * as Types from "../plugin-src/theme-types";
 import "./App.css";
 
+function isValidJSON(string: string): boolean {
+  if (!string) return false;
+  try {
+    JSON.parse(string);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+function isValidTheme(data: any): boolean {
+  return (
+    data &&
+    typeof data === "object" &&
+    "$schema" in data &&
+    "name" in data &&
+    "themes" in data &&
+    Array.isArray(data.themes) &&
+    data.themes.length > 0
+  );
+}
+
 function App() {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [value, setValue] = useState("");
-  const [isEmpty, setIsEmpty] = useState(true);
-  const [error, setError] = useState(false);
-  const [jsonValue, setJsonValue] = useState<string | null>(null);
+  const [collectionName, setCollectionName] = useState("");
+  const [showNameError, setShowNameError] = useState(false);
   const [themeData, setThemeData] = useState<Types.ThemeData | null>(null);
   const [defaultName, setDefaultName] = useState<string | null>(null);
-  const [jsonError, setJsonError] = useState(false);
+  const [jsonValue, setJsonValue] = useState<string | null>("");
+  const [jsonError, setJsonError] = useState<
+    false | "INVALID_JSON" | "INVALID_THEME"
+  >(false);
+
+  function onJsonInput(event: React.ChangeEvent<HTMLTextAreaElement>) {
+    const userInput = event.target.value;
+    setJsonValue(userInput);
+    // setJsonError(!isValidJSON(userInput) ? "INVALID_JSON" : false);
+  }
 
   useEffect(() => {
-    // console.log(jsonValue);
-    if (jsonValue) {
-      try {
-        setThemeData(JSON.parse(jsonValue) as Types.ThemeData);
-        setJsonError(false);
-      } catch (error) {
-        setJsonError(true);
-        console.error(error);
+    if (!jsonValue || jsonValue.trim() === "") {
+      setJsonError(false);
+      setThemeData(null);
+      return;
+    }
+
+    if (!isValidJSON(jsonValue)) {
+      setJsonError("INVALID_JSON");
+      setThemeData(null);
+      return;
+    }
+
+    try {
+      const parsedJson = JSON.parse(jsonValue);
+
+      if (!isValidTheme(parsedJson)) {
+        setJsonError("INVALID_THEME");
+        setThemeData(null);
+        return;
       }
+
+      setJsonError(false);
+      const parsedThemeData = parsedJson as Types.ThemeData;
+      setThemeData(parsedThemeData);
+
+      console.log(
+        "Found multiple light and dark themes. Select up to four variants: ",
+      );
+
+      parsedThemeData.themes.forEach((theme) => {
+        console.log(`Name: ${theme.name}, appearance: ${theme.appearance}`);
+      });
+
+      setDefaultName(parsedThemeData.name);
+      setCollectionName(parsedThemeData.name);
+      setShowNameError(false);
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+      setJsonError("INVALID_JSON");
+      setThemeData(null);
     }
   }, [jsonValue]);
 
-  useEffect(() => {
-    if (themeData) {
-      console.log(themeData.name);
-      setDefaultName(themeData?.name);
-    }
-  }, [themeData]);
+  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const userInput = event.target.value;
+    setCollectionName(userInput);
 
-  useEffect(() => {
-    if (defaultName) {
-      setValue(defaultName);
-    }
-  }, [defaultName]);
-
-  // if (themeData) {
-  //   const themes = themeData.themes;
-  //   console.log(themes);
-  // }
-
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value !== "") {
-      setIsEmpty(false);
-      setError(false);
+    if (userInput !== "") {
+      setShowNameError(false);
       parent.postMessage({ pluginMessage: { type: "resize" } }, "*");
-      console.log("not empty");
     }
-    setValue(event.target.value);
+    setCollectionName(event.target.value);
   };
 
   const onCreate = () => {
-    if (value === "") {
-      setError(true);
-      parent.postMessage({ pluginMessage: { type: "error" } }, "*");
-    } else {
-      parent.postMessage(
-        {
-          pluginMessage: {
-            type: "create-collection",
-            themeData: themeData,
-            name: value,
-          },
-        },
-        "*",
-      );
+    if (collectionName === "") {
+      setShowNameError(true);
+      return;
     }
+    if (!isValidJSON(jsonValue!)) {
+      setJsonError("INVALID_JSON");
+      return;
+    }
+
+    const parsedJson = JSON.parse(jsonValue!);
+    if (!isValidTheme(parsedJson)) {
+      setJsonError("INVALID_THEME");
+      return;
+    }
+
+    if (!jsonValue || !isValidJSON(jsonValue)) {
+      setJsonError("INVALID_JSON");
+      return;
+    }
+
+    parent.postMessage(
+      {
+        pluginMessage: {
+          type: "create-collection",
+          themeData: themeData,
+          name: collectionName,
+        },
+      },
+      "*",
+    );
   };
 
   const onCancel = () => {
     parent.postMessage({ pluginMessage: { type: "cancel" } }, "*");
   };
-
-  function handleJsonInput(event: React.ChangeEvent<HTMLTextAreaElement>) {
-    setJsonValue(event.target.value);
-  }
 
   const jsonPlaceholder = `{
   "$schema": "https://zed.dev/schema/themes/v0.2.0.json",
@@ -105,26 +158,32 @@ function App() {
         <textarea
           id="json"
           placeholder={jsonPlaceholder}
-          value={jsonValue ?? ""}
-          onChange={handleJsonInput}
+          value={jsonValue}
+          onChange={onJsonInput}
           className={jsonError ? "input-error" : ""}
         ></textarea>
+        {jsonError === "INVALID_JSON" && (
+          <span className="error">This is not valid JSON</span>
+        )}
+        {jsonError === "INVALID_THEME" && (
+          <span className="error">This is not a valid theme format</span>
+        )}
       </section>
       <section>
         <label htmlFor="input">Collection name</label>
         <input
-          value={value}
-          onChange={onChange}
+          value={collectionName}
+          onChange={onNameChange}
           id="input"
           type="text"
           ref={inputRef}
           placeholder="E.g. Gruvbox"
-          className={error ? "input-error" : ""}
+          className={showNameError ? "input-error" : ""}
         />
+        {showNameError && (
+          <span className="error">Please enter a name for your collection</span>
+        )}
       </section>
-      {error && (
-        <span className="error">Please enter a name for your collection</span>
-      )}
       <footer>
         <button data-type="cancel" onClick={onCancel}>
           Cancel

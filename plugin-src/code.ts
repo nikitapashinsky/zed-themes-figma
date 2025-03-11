@@ -13,19 +13,10 @@ figma.ui.onmessage = async (msg: {
       if (!msg.themeData || !msg.name) {
         throw new Error("Missing required data");
       }
-      const themes = msg.themeData.themes;
-      if (!themes) {
-        throw new Error("No themes found in theme data");
-      }
-      // if (msg.type === "error") {
-      //   figma.ui.resize(300, 124);
-      // }
-      // if (msg.type === "resize") {
-      //   figma.ui.resize(300, 100);
-      // }
       try {
         const notification = figma.notify("Creating variable collection…");
         await new Promise((resolve) => setTimeout(resolve, 100));
+
         const collectionName = msg.name;
 
         // Create a variable collection with light and dark modes
@@ -36,6 +27,11 @@ figma.ui.onmessage = async (msg: {
         collection.renameMode(collection.modes[0].modeId, "Light");
         const lightModeId = collection.modes[0].modeId;
         const darkModeId = collection.addMode("Dark");
+
+        const themes = msg.themeData.themes;
+        if (!themes) {
+          throw new Error("No themes found in theme data");
+        }
 
         const lightTheme = themes.find((theme) => theme.appearance === "light");
         const darkTheme = themes.find((theme) => theme.appearance === "dark");
@@ -116,9 +112,7 @@ figma.ui.onmessage = async (msg: {
 
         if (lightThemeStylePlayers) {
           Object.entries(lightThemeStylePlayers).forEach(([key, value]) => {
-            // console.log(key);
             Object.entries(value).forEach(([property, value]) => {
-              console.log(key, property, value);
               const playerNumber = (parseInt(key) + 1).toString();
               const variable = figma.variables.createVariable(
                 `players/${playerNumber}/${property}`,
@@ -187,14 +181,11 @@ figma.ui.onmessage = async (msg: {
           const currentCollectionVariables = localColorVariables.filter(
             (variable) => variable.variableCollectionId === collection.id,
           );
-          currentCollectionVariables.filter((variable) => {
-            console.log(variable.name);
-          });
+
           Object.entries(darkThemeStylePlayers).forEach(([key, value]) => {
             const playerNumber = (parseInt(key) + 1).toString();
             Object.entries(value).forEach(([property, value]) => {
               key = `players/${playerNumber}/${property}`;
-              console.log("dark key property value: " + key, property, value);
               const variable = currentCollectionVariables.find(
                 (v) => v && v.name === key,
               );
