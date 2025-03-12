@@ -1,3 +1,3 @@
 # About
 
-A utility plugin I created to import Zed theme JSON into a Figma variable collection.
+A utility plugin I'm working on to import Zed theme JSON into a Figma variable collection.
