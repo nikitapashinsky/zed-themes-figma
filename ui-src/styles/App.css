@@ -1,0 +1,277 @@
+@import "reset.css";
+
+:root {
+  font-family: InterVariable, sans-serif;
+  font-variation-settings: "wght" 450;
+  font-display: swap;
+  color: var(--figma-color-text);
+  font-size: 11px;
+  line-height: 16px;
+}
+
+body {
+  margin: 0;
+  user-select: none;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: stretch;
+  /* gap: 12px; */
+  /* padding: 4px; */
+}
+
+textarea {
+  font-family: monospace;
+  resize: none;
+  flex-grow: 1;
+  background: var(--figma-color-bg-secondary);
+  color: var(--figma-color-text);
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  padding: 8px 8px;
+  font-size: 11px;
+  /* height: 200px; */
+}
+
+footer {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  border-top: 1px solid var(--figma-color-border);
+  padding: 12px 12px;
+}
+
+section {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 12px;
+
+  &:has(+ section) {
+    padding-bottom: 4px;
+  }
+}
+
+section:nth-of-type(2) {
+  flex-grow: 0;
+}
+
+label {
+  font-size: 11px;
+  font-weight: 450;
+  color: var(--figma-color-text-secondary);
+}
+
+input {
+  font-family: InterVariable, sans-serif;
+  background: var(--figma-color-bg-secondary);
+  color: var(--figma-color-text);
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 11px;
+  height: 24px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--figma-color-text-disabled);
+}
+
+input:hover,
+textarea:hover {
+  box-shadow: inset 0 0 0 1px var(--figma-color-border);
+}
+
+input:focus-visible,
+textarea:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--figma-color-border-selected);
+}
+
+.input-error {
+  box-shadow: inset 0 0 0 1px var(--figma-color-border-danger-strong);
+}
+
+.input-error:hover {
+  box-shadow: inset 0 0 0 1px var(--figma-color-border-danger-strong);
+}
+
+.input-error:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--figma-color-border-danger-strong);
+}
+
+.input-error::placeholder {
+  color: var(--figma-color-text-disabled);
+}
+
+.button {
+  border: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  font-size: 11px;
+  line-height: 16px;
+  height: 24px;
+  padding: 0 10px;
+  font-family: InterVariable, sans-serif;
+}
+
+.button-primary {
+  background: var(--figma-color-bg-brand);
+  color: var(--figma-color-text-onbrand);
+  font-variation-settings: "wght" 500;
+}
+.button-primary:active {
+  background: var(--figma-color-bg-brand-pressed);
+}
+.button-primary:focus-visible {
+  box-shadow:
+    inset 0 0 0 1px var(--figma-color-border-selected),
+    inset 0 0 0 2px var(--figma-color-bg);
+}
+
+.button-secondary {
+  background: var(--figma-color-bg);
+  color: var(--figma-color-text);
+  box-shadow: inset 0 0 0 1px var(--figma-color-border);
+
+  &:active {
+    background: var(--figma-color-bg-secondary);
+    box-shadow: inset 0 0 0 1px var(--figma-color-border-selected);
+  }
+
+  &:focus-visible {
+    box-shadow: inset 0 0 0 1px var(--figma-color-border-selected);
+  }
+}
+
+.error {
+  font-size: 11px;
+  color: var(--figma-color-text-danger);
+  /* margin-bottom: 12px; */
+}
+
+.select-themes-container {
+  padding: 4px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.description {
+  color: var(--figma-color-text-secondary);
+}
+
+.select-themes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 0;
+  min-width: 0;
+}
+
+.CheckboxContainer {
+  display: flex;
+  gap: 8px;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.CheckboxRoot {
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--figma-color-bg-secondary);
+  box-shadow: inset 0 0 0 1px var(--figma-color-border);
+}
+
+.CheckboxRoot:focus {
+  box-shadow: inset 0 0 0 1px var(--figma-color-border-selected);
+}
+
+.CheckboxRoot:not([data-disabled]):active {
+  box-shadow: inset 0 0 0 1px var(--figma-color-border-selected);
+}
+
+.CheckboxRoot[data-disabled] {
+  background-color: var(--figma-color-bg);
+}
+
+.CheckboxRoot[data-state="checked"] {
+  background-color: var(--figma-color-bg-brand);
+  box-shadow: inset 0 0 0 1px var(--figma-color-border-selected);
+}
+
+.CheckboxRoot[data-state="checked"]:active {
+  background-color: var(--figma-color-bg-brand-pressed);
+  box-shadow: inset 0 0 0 1px var(--figma-color-border-selected-strong);
+}
+
+.CheckboxRoot[data-state="checked"]:focus {
+  box-shadow: inset 0 0 0 1px var(--figma-color-border-selected-strong);
+}
+
+.CheckboxRoot[data-state="checked"]:focus > .CheckboxIndicator {
+  box-shadow: inset 0 0 0 1px var(--figma-color-bg);
+}
+
+.CheckboxRoot[data-state="checked"]:active > .CheckboxIndicator {
+  background-color: var(--figma-color-bg-brand-pressed);
+  box-shadow: inset 0 0 0 1px var(--figma-color-bg);
+}
+
+.CheckboxIndicator {
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  background-color: var(--figma-color-bg-brand);
+  color: var(--figma-color-text-onbrand);
+}
+
+.CheckboxLabel {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  color: var(--figma-color-text);
+  min-width: 0;
+
+  & > span:first-child {
+    flex: 1;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  & > span:nth-child(2) {
+    /* background-color: var(--figma-color-bg-secondary); */
+    min-width: 35px;
+    color: var(--figma-color-text-secondary);
+    /* min-width: 0; */
+  }
+}
+
+.CheckboxRoot[data-disabled] ~ .CheckboxLabel {
+  color: var(--figma-color-text-disabled);
+}
+
+.CheckboxRoot[data-disabled] ~ .CheckboxLabel > span {
+  color: var(--figma-color-text-disabled);
+}

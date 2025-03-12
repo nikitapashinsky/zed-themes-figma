@@ -8,6 +8,17 @@ figma.ui.onmessage = async (msg: {
   themeData?: Types.ThemeData;
   name?: string;
 }) => {
+  if (msg.type === "resize") {
+    console.log("received resize message");
+    figma.ui.resize(300, 560);
+    return;
+  }
+
+  if (msg.type === "reset-size") {
+    figma.ui.resize(300, 400);
+    return;
+  }
+
   try {
     if (msg.type === "create-collection") {
       if (!msg.themeData || !msg.name) {
@@ -35,6 +46,7 @@ figma.ui.onmessage = async (msg: {
 
         const lightTheme = themes.find((theme) => theme.appearance === "light");
         const darkTheme = themes.find((theme) => theme.appearance === "dark");
+        console.log("dark theme: ", darkTheme);
 
         const lightThemeStyle = lightTheme ? lightTheme.style : undefined;
         const darkThemeStyle = darkTheme ? darkTheme.style : undefined;
@@ -197,7 +209,7 @@ figma.ui.onmessage = async (msg: {
         }
         notification.cancel();
       } catch (error) {
-        console.error("Error creating collection: ", error);
+        console.error(`Error creating collection: \n ${error.message}`);
         figma.notify("Error creating collection");
       }
 

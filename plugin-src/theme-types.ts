@@ -8,11 +8,15 @@ export interface ThemeData {
 export interface Theme {
   name: string;
   appearance: "dark" | "light";
+  accents?: string[];
   style: ThemeStyle;
 }
 
+export type ThemeMetadata = Omit<Theme, "style">;
+
 export interface ThemeStyle {
-  [key: string]: string | null | Player[] | SyntaxStyles;
+  accents?: string[];
+  [key: string]: string | string[] | null | undefined | Player[] | SyntaxStyles;
   players: Player[];
   syntax: SyntaxStyles;
 }
