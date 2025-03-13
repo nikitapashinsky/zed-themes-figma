@@ -97,6 +97,7 @@ function App() {
           appearance: theme.appearance,
         }),
       );
+      console.log("Parsed themes", parsedThemes);
 
       const parsedDarkThemes = parsedThemes.filter(
         ({ appearance }) => appearance === "dark",
@@ -106,39 +107,45 @@ function App() {
         ({ appearance }) => appearance === "light",
       );
 
-      const sortedParsedThemes: Types.ThemeMetadata[] = [];
+      if (parsedThemes.length > 2) {
+        const sortedParsedThemes: Types.ThemeMetadata[] = [];
+        for (
+          let i = 0;
+          i < Math.max(parsedDarkThemes.length, parsedLightThemes.length);
+          i++
+        ) {
+          if (i < parsedDarkThemes.length)
+            sortedParsedThemes.push(parsedDarkThemes[i]);
+          if (i < parsedLightThemes.length)
+            sortedParsedThemes.push(parsedLightThemes[i]);
+        }
 
-      for (
-        let i = 0;
-        i < Math.max(parsedDarkThemes.length, parsedLightThemes.length);
-        i++
-      ) {
-        if (i < parsedDarkThemes.length)
-          sortedParsedThemes.push(parsedDarkThemes[i]);
-        if (i < parsedLightThemes.length)
-          sortedParsedThemes.push(parsedLightThemes[i]);
+        setSortedThemes(sortedParsedThemes);
+
+        const shouldShowCheckboxes = parsedThemes.length > 2;
+        setIsExpandedView(shouldShowCheckboxes);
+
+        if (shouldShowCheckboxes && !isExpandedView) {
+          parent.postMessage({ pluginMessage: { type: "resize" } }, "*");
+        } else if (!shouldShowCheckboxes && isExpandedView) {
+          parent.postMessage({ pluginMessage: { type: "reset-size" } }, "*");
+        }
+        setSelectedThemes(initialSelectedThemes);
+        setSelectedThemesError(false);
+      } else if (parsedThemes.length <= 2) {
+        const newSelectedThemes = Object.fromEntries(
+          parsedThemes.map((theme) => [theme.name, true]),
+        );
+        setSelectedThemes(newSelectedThemes);
+        setSelectedThemesError(false);
       }
 
-      setSortedThemes(sortedParsedThemes);
-
-      const shouldShowCheckboxes = parsedThemes.length > 2;
-      setIsExpandedView(shouldShowCheckboxes);
-
-      if (shouldShowCheckboxes && !isExpandedView) {
-        parent.postMessage({ pluginMessage: { type: "resize" } }, "*");
-      } else if (!shouldShowCheckboxes && isExpandedView) {
-        parent.postMessage({ pluginMessage: { type: "reset-size" } }, "*");
-      }
-
-      setSelectedThemes(initialSelectedThemes);
-      setSelectedThemesError(false);
       setThemes(parsedThemes);
       setThemeData(parsedThemeData);
-      setIsValidThemeData(true);
-      setJsonError(false);
-
       setDefaultName(parsedThemeData.name);
       setCollectionName(parsedThemeData.name);
+      setIsValidThemeData(true);
+      setJsonError(false);
       setShowNameError(false);
     } catch (error) {
       console.error("Error parsing JSON:", error);
@@ -295,7 +302,6 @@ function App() {
             onChange={onNameChange}
             id="input"
             type="text"
-            // ref={inputRef}
             placeholder={defaultName || "E.g. Gruvbox"}
             className={showNameError ? "input-error" : ""}
           />
