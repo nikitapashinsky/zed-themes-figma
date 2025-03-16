@@ -18,15 +18,17 @@ main {
   display: flex;
   flex-direction: column;
   height: 100%;
-  justify-content: stretch;
+  /* justify-content: stretch; */
   /* gap: 12px; */
   /* padding: 4px; */
 }
 
 textarea {
+  position: relative;
   font-family: monospace;
   resize: none;
-  flex-grow: 1;
+  /* flex-grow: 1; */
+  height: 100%;
   background: var(--figma-color-bg-secondary);
   color: var(--figma-color-text);
   border: none;
@@ -42,7 +44,7 @@ footer {
   gap: 8px;
   justify-content: flex-end;
   /* border-top: 1px solid var(--figma-color-border); */
-  padding: 12px 12px;
+  padding: 12px;
 }
 
 .TabsRoot {
@@ -61,7 +63,7 @@ footer {
 
 .TabsListInner {
   display: flex;
-  gap: 4px;
+  gap: 8px;
   flex: 1;
 }
 
@@ -69,7 +71,7 @@ footer {
   display: grid;
   align-items: center;
   justify-content: center;
-  padding: 0 8px;
+  padding: 0 8px 0 6px;
   height: 24px;
   line-height: 16px;
   border-radius: 5px;
@@ -80,6 +82,8 @@ footer {
   & > span {
     grid-row: 1;
     grid-column: 1;
+    display: flex;
+    gap: 6px;
   }
 
   &[data-state="active"],
@@ -89,6 +93,12 @@ footer {
 
   &:focus-visible {
     box-shadow: inset 0 0 0 1px var(--figma-color-border-selected);
+  }
+
+  &[data-disabled],
+  &[data-disabled]:hover {
+    color: var(--figma-color-text-disabled);
+    background-color: var(--figma-color-bg);
   }
 }
 

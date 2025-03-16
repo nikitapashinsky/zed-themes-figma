@@ -3,7 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import * as Types from "../plugin-src/theme-types";
 import "./styles/App.css";
 import { Checkbox, Tabs } from "radix-ui";
-import { CheckIcon, QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import {
+  DownloadIcon,
+  UploadIcon,
+  UpdateIcon,
+  CheckIcon,
+  QuestionMarkCircledIcon,
+} from "@radix-ui/react-icons";
 
 function isValidJSON(string: string): boolean {
   if (!string) return false;
@@ -198,10 +204,6 @@ function App() {
     );
   };
 
-  const onCancel = () => {
-    parent.postMessage({ pluginMessage: { type: "cancel" } }, "*");
-  };
-
   const jsonPlaceholder = `{
   "$schema": "https://zed.dev/schema/themes/v0.2.0.json",
    "name": "One",
@@ -226,15 +228,27 @@ function App() {
         <Tabs.List className="TabsList" aria-label="Manage your account">
           <div className="TabsListInner">
             <Tabs.Trigger className="TabsTrigger" value="tab1">
-              <span className="TabTextActive">Import</span>
-              <span className="TabTextInactive">Import</span>
+              <span className="TabTextActive">
+                <DownloadIcon />
+                Import
+              </span>
+              <span className="TabTextInactive">
+                <DownloadIcon />
+                Import
+              </span>
             </Tabs.Trigger>
-            <Tabs.Trigger className="TabsTrigger" value="tab2">
-              <span className="TabTextActive">Swap</span>
-              <span className="TabTextInactive">Swap</span>
+            <Tabs.Trigger className="TabsTrigger" value="tab3" disabled>
+              <span className="TabTextActive">
+                <UploadIcon />
+                Export
+              </span>
+              <span className="TabTextInactive">
+                <UploadIcon />
+                Export
+              </span>
             </Tabs.Trigger>
           </div>
-          <Tabs.Trigger className="TabsTriggerIcon" value="tab3">
+          <Tabs.Trigger className="TabsTriggerIcon" value="tab4">
             <QuestionMarkCircledIcon />
           </Tabs.Trigger>
         </Tabs.List>
@@ -249,6 +263,7 @@ function App() {
               onChange={onJsonInput}
               className={jsonError ? "input-error" : ""}
             ></textarea>
+
             {jsonError === "INVALID_JSON" && (
               <span className="error">This is not valid JSON</span>
             )}
@@ -313,6 +328,7 @@ function App() {
               )}
             </form>
           )}
+
           {isValidThemeData && (
             <section>
               <label htmlFor="input">Collection name</label>
@@ -331,13 +347,14 @@ function App() {
               )}
             </section>
           )}
+
           <footer>
             <button className="button button-primary brand" onClick={onCreate}>
               Create collection
             </button>
           </footer>
         </Tabs.Content>
-        <Tabs.Content className="TabsContent" value="tab2">
+        <Tabs.Content className="TabsContent" value="tab3">
           <section>
             <p>Swap theme placeholder</p>
           </section>
@@ -347,7 +364,7 @@ function App() {
             </button>
           </footer>
         </Tabs.Content>
-        <Tabs.Content className="TabsContent" value="tab3">
+        <Tabs.Content className="TabsContent" value="tab4">
           <section>
             <p>Help page placeholder</p>
           </section>
